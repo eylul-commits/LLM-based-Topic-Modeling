@@ -33,29 +33,33 @@ def main():
     dictionary = corpora.Dictionary(tokenized_texts)
     corpus = [dictionary.doc2bow(text) for text in tokenized_texts]
 
-    # Train LDA model
+     # Train LDA model
     lda_model = models.LdaModel(corpus=corpus, id2word=dictionary, num_topics=10, passes=10)
 
     for idx, topic in lda_model.print_topics(-1):
-        print(f"Topic {idx}: {topic}")
+         print(f"Topic {idx}: {topic}")
 
-    # LDA Coherence
+    # # LDA Coherence
     coherence_model_lda = CoherenceModel(model=lda_model, texts=tokenized_texts,
-                                         dictionary=dictionary, coherence='c_v')
+                                          dictionary=dictionary, coherence='c_v')
     coherence_lda = coherence_model_lda.get_coherence()
     print(f"LDA Coherence Score: {coherence_lda:.4f}")
 
     # BERTopic
     topic_model = BERTopic(language="english", calculate_probabilities=True)
-    topics, _ = topic_model.fit_transform(texts)
+    topics, _ = topic_model.fit_transform(cleaned_texts)
 
     print(topic_model.get_topic_info())
     topic_model.visualize_topics().show()
 
     # BERTopic Coherence
     topics_words = topic_model.get_topics()
-    bertopic_topics = [[word for word, _ in topic] for topic in topics_words.values()]
-    
+    bertopic_topics = [
+        [word for word, _ in topic_words]
+        for topic_id, topic_words in topics_words.items()
+        if topic_id != -1 and len(topic_words) > 0
+    ]
+
     coherence_model_bertopic = CoherenceModel(topics=bertopic_topics, texts=tokenized_texts,
                                               dictionary=dictionary, coherence='c_v')
     coherence_bertopic = coherence_model_bertopic.get_coherence()
