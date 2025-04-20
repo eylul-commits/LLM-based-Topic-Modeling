@@ -21,9 +21,21 @@ def main():
     nltk.download('stopwords')
     nltk.download('all')
 
+    categories = [ 'comp.graphics',
+    'comp.os.ms-windows.misc',
+    'comp.sys.ibm.pc.hardware',
+    'comp.sys.mac.hardware',
+    'comp.windows.x',
+    'misc.forsale',
+    'rec.autos',
+    'rec.motorcycles',
+    'rec.sport.baseball',
+    'rec.sport.hockey']
+
+
     # Load dataset
-    newsgroups = fetch_20newsgroups(remove=('headers', 'footers', 'quotes'))
-    texts = newsgroups.data[:1000]
+    newsgroups = fetch_20newsgroups(categories=categories, remove=('headers', 'footers', 'quotes'))
+    texts = newsgroups.data[:5000]
 
     # Preprocessing
     cleaned_texts = [preprocess(doc) for doc in texts]
