@@ -1,0 +1,4 @@
+topic_env/
+nltk_data/
+__pycache__/
+*.pyc
